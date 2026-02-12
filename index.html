@@ -62,10 +62,61 @@ button:hover {
 .hidden {
     display: none;
 }
+
+/* --- PANTALLA INICIAL --- */
+
+#homeScreen {
+    position: fixed;
+    inset: 0;
+    background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)),
+                url("fondo.jpg") center/cover no-repeat;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 999;
+    animation: fadeIn 1s ease-in-out;
+}
+
+#homeScreen h1 {
+    font-size: 32px;
+    margin-bottom: 30px;
+    text-shadow: 0 0 15px rgba(255,0,0,0.8);
+}
+
+.startBtn {
+    padding: 15px 35px;
+    font-size: 18px;
+    border-radius: 30px;
+    border: none;
+    background: linear-gradient(45deg, #ff4c4c, #ff0000);
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s;
+    box-shadow: 0 0 20px rgba(255,0,0,0.6);
+}
+
+.startBtn:hover {
+    transform: scale(1.1);
+    box-shadow: 0 0 30px rgba(255,0,0,1);
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
 </style>
 </head>
 
 <body>
+
+  <div id="homeScreen">
+    <h1>🩸 Asesino - Médico - Ciudadano</h1>
+    <button class="startBtn" onclick="startApp()">JUGAR</button>
+</div>
+
 
 <div class="container">
 
@@ -113,6 +164,10 @@ function createInputs() {
     }
 
     document.getElementById("rolesConfig").classList.remove("hidden");
+}
+
+function startApp() {
+    document.getElementById("homeScreen").style.display = "none";
 }
 
 function startGame() {
