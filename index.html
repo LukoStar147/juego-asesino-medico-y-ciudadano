@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#ff4c4c">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Asesino - Médico - Ciudadano</title>
+
+<style>
+body {
+    font-family: Arial, sans-serif;
+    background-image: url("ciudad_cyberpunk.jpg");
+    background-size: cover;        /* Ajusta a toda la pantalla */
+    background-position: center;   /* Centra la imagen */
+    background-repeat: no-repeat;  /* No se repite */
+    background-attachment: fixed;  /* Fondo fijo al hacer scroll */
+    color: white;
+    text-align: center;
+    margin: 0;
+    padding: 20px;
+}
+
+.container {
+    max-width: 400px;
+    margin: auto;
+    background: #2c2c3e;
+    padding: 20px;
+    border-radius: 15px;
+    box-shadow: 0 0 15px rgba(0,0,0,0.4);
+}
+
+input {
+    padding: 8px;
+    margin: 5px;
+    border-radius: 8px;
+    border: none;
+    width: 80%;
+}
+
+button {
+    padding: 10px 15px;
+    margin: 10px;
+    border-radius: 10px;
+    border: none;
+    background: #ff4c4c;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+button:hover {
+    background: #ff1f1f;
+}
+
+.role {
+    font-size: 22px;
+    margin-top: 15px;
+    font-weight: bold;
+}
+
+.hidden {
+    display: none;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <h2>Asesino - Médico - Ciudadano</h2>
+
+    <div id="setup">
+        <input type="number" id="numPlayers" placeholder="Cantidad de jugadores" min="3">
+        <button onclick="createInputs()">Crear jugadores</button>
+    </div>
+
+    <div id="playerInputs"></div>
+
+    <div id="rolesConfig" class="hidden">
+        <input type="number" id="numAsesinos" placeholder="Cantidad de asesinos" min="1">
+        <input type="number" id="numMedicos" placeholder="Cantidad de médicos" min="0">
+        <button onclick="startGame()">Comenzar</button>
+    </div>
+
+    <div id="revealSection" class="hidden">
+        <h3 id="playerTurn"></h3>
+        <button onclick="revealRole()">Ver Rol</button>
+        <div id="roleDisplay" class="role"></div>
+        <button id="nextBtn" class="hidden" onclick="nextPlayer()">Siguiente</button>
+    </div>
+
+</div>
+
+<script>
+let players = [];
+let roles = [];
+let currentPlayer = 0;
+
+function createInputs() {
+    const num = parseInt(document.getElementById("numPlayers").value);
+    const container = document.getElementById("playerInputs");
+    container.innerHTML = "";
+
+    if (num < 3) {
+        alert("Debe haber al menos 3 jugadores.");
+        return;
+    }
+
+    for (let i = 0; i < num; i++) {
+        container.innerHTML += `<input type="text" placeholder="Nombre jugador ${i+1}" id="player${i}"><br>`;
+    }
+
+    document.getElementById("rolesConfig").classList.remove("hidden");
+}
+
+function startGame() {
+    players = [];
+    roles = [];
+    currentPlayer = 0;
+
+    const numPlayers = parseInt(document.getElementById("numPlayers").value);
+    const numAsesinos = parseInt(document.getElementById("numAsesinos").value);
+    const numMedicos = parseInt(document.getElementById("numMedicos").value);
+
+    if (numAsesinos + numMedicos > numPlayers) {
+        alert("Demasiados roles especiales.");
+        return;
+    }
+
+    for (let i = 0; i < numPlayers; i++) {
+        const name = document.getElementById(`player${i}`).value;
+        if (!name) {
+            alert("Todos los jugadores deben tener nombre.");
+            return;
+        }
+        players.push(name);
+    }
+
+    // Crear lista de roles
+    for (let i = 0; i < numAsesinos; i++) roles.push("🗡️ Asesino");
+    for (let i = 0; i < numMedicos; i++) roles.push("💉 Médico");
+    while (roles.length < numPlayers) roles.push("🙂 Ciudadano");
+
+    // Mezclar aleatoriamente
+    roles.sort(() => Math.random() - 0.5);
+
+    document.getElementById("setup").classList.add("hidden");
+    document.getElementById("playerInputs").classList.add("hidden");
+    document.getElementById("rolesConfig").classList.add("hidden");
+    document.getElementById("revealSection").classList.remove("hidden");
+
+    updateTurn();
+}
+
+function updateTurn() {
+    document.getElementById("playerTurn").innerText = "Turno de: " + players[currentPlayer];
+    document.getElementById("roleDisplay").innerText = "";
+    document.getElementById("nextBtn").classList.add("hidden");
+}
+
+function revealRole() {
+    document.getElementById("roleDisplay").innerText = roles[currentPlayer];
+    document.getElementById("nextBtn").classList.remove("hidden");
+}
+
+function nextPlayer() {
+    currentPlayer++;
+    if (currentPlayer >= players.length) {
+        alert("Todos los roles han sido asignados.");
+        location.reload();
+        return;
+    }
+    updateTurn();
+}
+</script>
+
+</body>
+</html>
